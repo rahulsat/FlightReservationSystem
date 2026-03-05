@@ -26,6 +26,6 @@ public class User {
     @Column(unique = true,nullable=false,length=11)
     private String phoneNumber;
     @Column(name="Members")
-    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Members> AddMembers;
 }
