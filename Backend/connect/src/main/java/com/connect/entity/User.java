@@ -21,7 +21,7 @@ public class User {
     private String email;
     @Column(nullable=false)
     private int age;
-    @Column(nullable=false,length=12)
+    @Column(nullable=false,length=120)
     private String password;
     @Column(unique = true,nullable=false,length=11)
     private String phoneNumber;

@@ -3,9 +3,10 @@ package com.connect.repository;
 import com.connect.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
+
 public interface UserRepository extends JpaRepository<User, Integer> {
-
-    User findByEmail(String email);
-
-    User findByPhoneNumber(String phoneNumber);
+    Optional<User> findByEmail(String email);
+    Optional<User> findByName(String name);
+    Optional<User> findByPhoneNumber(String phoneNumber);
 }
