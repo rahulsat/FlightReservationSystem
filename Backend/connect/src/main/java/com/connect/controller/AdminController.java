@@ -6,10 +6,9 @@ import com.connect.repository.FlightRepository;
 import com.connect.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/Admin")
@@ -22,5 +21,9 @@ public class AdminController {
     @PostMapping("/add-airport")
     public ResponseEntity<?> addAirport(@RequestBody Airport airport){
         return adminService.addAirport(airport);
+    }
+    @GetMapping("/AllAirports")
+    public ResponseEntity<List<Airport>> getAllAirports(){
+        return adminService.getAllAirportsList();
     }
 }

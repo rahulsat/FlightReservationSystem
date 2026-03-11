@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,5 +28,10 @@ public class AdminService {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(savedAirport);
+    }
+
+    public ResponseEntity<List<Airport>> getAllAirportsList(){
+        List<Airport> AllAirports=airportRepository.findAll();
+        return ResponseEntity.ok(AllAirports);
     }
 }

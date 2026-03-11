@@ -1,8 +1,11 @@
 package com.connect.service;
 
+import com.connect.entity.Airport;
 import com.connect.entity.User;
+import com.connect.repository.AirportRepository;
 import com.connect.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -12,8 +15,11 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class UserService {
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AirportRepository airportRepository;
+
     public ResponseEntity<User> patchUser(int id, User updatedUser) {
 
         return userRepository.findById(id).map(user -> {
@@ -55,5 +61,10 @@ public class UserService {
             return ResponseEntity.ok(userRepository.save(user));
 
         }).orElse(ResponseEntity.notFound().build());
+    }
+
+    public ResponseEntity<List<Airport>> getAllAirportsList(){
+        List<Airport> AllAirports=airportRepository.findAll();
+        return ResponseEntity.ok(AllAirports);
     }
 }

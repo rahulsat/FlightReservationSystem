@@ -1,10 +1,13 @@
 package com.connect.controller;
 
+import com.connect.entity.Airport;
 import com.connect.entity.User;
 import com.connect.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequestMapping("/user")
 @RequiredArgsConstructor
@@ -23,5 +26,9 @@ public class UserController {
             @RequestBody User request) {
 
         return userService.putUser(id, request);
+    }
+    @GetMapping("/AllAirports")
+    public ResponseEntity<List<Airport>> getAllAirports(){
+        return userService.getAllAirportsList();
     }
 }
