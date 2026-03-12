@@ -28,5 +28,5 @@ public class Seat {
 
     @ManyToOne
     @JoinColumn(name = "flight_id")
-    private Flights flight;
+    private Flight flight;
 }

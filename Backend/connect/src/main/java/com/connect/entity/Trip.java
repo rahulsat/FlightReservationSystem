@@ -1,24 +1,17 @@
 package com.connect.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
-
+import com.connect.entity.Flight;
 import java.time.LocalTime;
 
-@Entity
-@Table(name = "flightschedule")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class FlightSchedule {
+public class Trip {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int scheduleId;
+    private int tripId;
 
     @ManyToOne
-    @JoinColumn(name = "flightid")
+    @JoinColumn(name = "flight_id")
     private Flight flight;
 
     @ManyToOne
@@ -29,15 +22,8 @@ public class FlightSchedule {
     @JoinColumn(name = "destination_airport_id")
     private Airport destinationAirport;
 
-    @Column(nullable = false)
-    private int price;
-
-    @Column(nullable = false)
-    private int availableSeats;
-
     private LocalTime departureTime;
-
     private LocalTime arrivalTime;
 
-    private LocalTime duration;
+    private int tripNumber;
 }
