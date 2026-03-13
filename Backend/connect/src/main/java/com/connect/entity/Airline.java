@@ -2,7 +2,9 @@ package com.connect.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.util.List;
+
 import com.connect.entity.Flight;
 
 
@@ -23,7 +25,7 @@ public class Airline {
     @Column(nullable = false, length = 100)
     private String airlineEmail;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 100)
     private String airlineContact;
 
     @Column(length = 255)
