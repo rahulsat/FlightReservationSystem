@@ -34,4 +34,15 @@ public class AdminService {
         List<Airport> AllAirports=airportRepository.findAll();
         return ResponseEntity.ok(AllAirports);
     }
+
+    public Airport updateAirport(Integer id, Airport airport) {
+        Airport existing = airportRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Airport not found"));
+        existing.setAirportName(airport.getAirportName());
+        existing.setAirportCode(airport.getAirportCode());
+        existing.setCity(airport.getCity());
+        existing.setCountry(airport.getCountry());
+
+        return airportRepository.save(existing);
+    }
 }

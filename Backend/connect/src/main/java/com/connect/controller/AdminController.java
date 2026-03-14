@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/Admin")
@@ -22,8 +23,14 @@ public class AdminController {
     public ResponseEntity<?> addAirport(@RequestBody Airport airport){
         return adminService.addAirport(airport);
     }
+
     @GetMapping("/AllAirports")
     public ResponseEntity<List<Airport>> getAllAirports(){
         return adminService.getAllAirportsList();
+    }
+
+    @PutMapping("/updateAirport/{id}")
+    public Airport updateAirport(@PathVariable Integer id,@RequestBody Airport airport) {
+        return adminService.updateAirport(id, airport);
     }
 }
