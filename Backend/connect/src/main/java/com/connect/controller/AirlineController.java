@@ -24,12 +24,17 @@ public class AirlineController {
         return ResponseEntity.ok(airlineService.getAllAirlines());
     }
     @PutMapping("/airlines/{id}")
-    public ResponseEntity<String> updateAirline(@PathVariable Long id, @RequestBody Airline airline){
+    public ResponseEntity<String> updateAirline(@PathVariable Integer id, @RequestBody Airline airline){
         return ResponseEntity.ok(airlineService.updateAirline(Math.toIntExact(id), airline));
     }
     @PatchMapping("/airlines/{id}")
-    public ResponseEntity<String> patchAirline(@PathVariable Long id, @RequestBody Airline airline){
+    public ResponseEntity<String> patchAirline(@PathVariable Integer id, @RequestBody Airline airline){
         return ResponseEntity.ok(airlineService.patchAirline(id, airline));
+    }
+
+    @GetMapping("/getAirline/{Id}")
+    public ResponseEntity<Airline> getAirlineById(@PathVariable Integer Id){
+        return ResponseEntity.ok(airlineService.getAirlineById(Id));
     }
 
 }

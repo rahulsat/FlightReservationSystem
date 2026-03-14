@@ -10,8 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -23,35 +21,27 @@ public class UserService {
     public ResponseEntity<User> patchUser(int id, User updatedUser) {
 
         return userRepository.findById(id).map(user -> {
-
             if(updatedUser.getName() != null){
                 user.setName(updatedUser.getName());
             }
-
             if(updatedUser.getEmail() != null){
                 user.setEmail(updatedUser.getEmail());
             }
-
             if(updatedUser.getAge() != null){
                 user.setAge(updatedUser.getAge());
             }
-
             if(updatedUser.getPhoneNumber() != null){
                 user.setPhoneNumber(updatedUser.getPhoneNumber());
             }
-
             if(updatedUser.getPassword() != null){
                 user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
             }
-
             return ResponseEntity.ok(userRepository.save(user));
-
         }).orElse(ResponseEntity.notFound().build());
     }
     public ResponseEntity<User> putUser(int id, User updatedUser) {
 
         return userRepository.findById(id).map(user -> {
-
             user.setName(updatedUser.getName());
             user.setEmail(updatedUser.getEmail());
             user.setAge(updatedUser.getAge());
@@ -59,12 +49,16 @@ public class UserService {
             user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
 
             return ResponseEntity.ok(userRepository.save(user));
-
         }).orElse(ResponseEntity.notFound().build());
     }
 
     public ResponseEntity<List<Airport>> getAllAirportsList(){
         List<Airport> AllAirports=airportRepository.findAll();
         return ResponseEntity.ok(AllAirports);
+    }
+
+    public Airport getAirportById(Integer id){
+        return airportRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Airport not found"));
     }
 }

@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface AirlineRepository extends JpaRepository<Airline, Long> {
+public interface AirlineRepository extends JpaRepository<Airline, Integer> {
 
     Optional<Airline> findByAirlineName(String airlineName);
 

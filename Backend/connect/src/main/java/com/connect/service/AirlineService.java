@@ -28,7 +28,7 @@ public class AirlineService {
 
     public String updateAirline(Integer id, Airline request) {
 
-        Optional<Airline> existing = airlineRepository.findById(Long.valueOf(id));
+        Optional<Airline> existing = airlineRepository.findById(id);
 
         if (existing.isEmpty()) {
             return "Airline not found";
@@ -45,7 +45,7 @@ public class AirlineService {
 
         return "Airline updated successfully";
     }
-    public String patchAirline(Long id, Airline airlineRequest){
+    public String patchAirline(Integer id, Airline airlineRequest){
 
         Optional<Airline> existing = airlineRepository.findById(id);
         if(existing.isEmpty()){
@@ -60,5 +60,10 @@ public class AirlineService {
         }
         airlineRepository.save(airline);
         return "Airline updated partially";
+    }
+
+    public Airline getAirlineById(Integer id){
+        return airlineRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Airline not found"));
     }
 }

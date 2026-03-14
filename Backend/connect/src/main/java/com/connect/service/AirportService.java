@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class AdminService {
+public class AirportService {
 
     private final AirportRepository airportRepository;
 

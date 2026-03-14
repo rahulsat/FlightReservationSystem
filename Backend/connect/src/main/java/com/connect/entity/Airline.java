@@ -1,5 +1,6 @@
 package com.connect.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -32,5 +33,6 @@ public class Airline {
     private String airlineInfo;
 
     @OneToMany(mappedBy = "airline")
+    @JsonIgnore
     private List<Flight> flight;
 }

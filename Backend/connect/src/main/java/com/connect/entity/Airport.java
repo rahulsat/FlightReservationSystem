@@ -1,7 +1,9 @@
 package com.connect.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.util.List;
 
 @Entity
@@ -15,16 +17,24 @@ public class Airport {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer airportId;
+
     @Column(nullable = false, length = 100)
     private String airportName;
+
     @Column(nullable = false, unique = true, length = 10)
     private String airportCode;
+
     @Column(nullable = false, length = 50)
     private String city;
+
     @Column(nullable = false, length = 50)
     private String country;
+
     @OneToMany(mappedBy = "sourceAirport")
+    @JsonIgnore
     private List<Flight> sourceFlights;
+
     @OneToMany(mappedBy = "destinationAirport")
+    @JsonIgnore
     private List<Flight> destinationFlights;
 }
