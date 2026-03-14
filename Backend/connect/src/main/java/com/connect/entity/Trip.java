@@ -1,14 +1,19 @@
 package com.connect.entity;
 
 import jakarta.persistence.*;
-import com.connect.entity.Flight;
+import lombok.*;
 import java.time.LocalTime;
 
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Trip {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int tripId;
+    private Integer tripId;
 
     @ManyToOne
     @JoinColumn(name = "flight_id")
@@ -25,5 +30,5 @@ public class Trip {
     private LocalTime departureTime;
     private LocalTime arrivalTime;
 
-    private int tripNumber;
+    private Integer tripNumber;
 }

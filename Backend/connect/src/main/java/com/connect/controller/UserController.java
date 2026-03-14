@@ -64,4 +64,29 @@ public class UserController {
         return ResponseEntity.ok(userService.getAirportById(Id));
     }
 
+    @GetMapping("/search")
+    public List<Flight> searchFlights(
+            @RequestParam String source,
+            @RequestParam String destination,
+            @RequestParam(required = false) String date
+    ) {
+        return flightService.searchFlights(source, destination);
+    }
+
+    // 2️⃣ Flights by airport
+    @GetMapping("/airport/{airportCode}")
+    public List<Flight> getFlightsByAirport(
+            @PathVariable String airportCode
+    ) {
+        return flightService.getFlightsByAirport(airportCode);
+    }
+
+    // 3️⃣ Flights by airline
+    @GetMapping("/airline/{airlineId}")
+    public List<Flight> getFlightsByAirline(
+            @PathVariable Integer airlineId
+    ) {
+        return flightService.getFlightsByAirline(airlineId);
+    }
+
 }

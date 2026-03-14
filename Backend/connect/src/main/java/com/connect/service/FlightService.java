@@ -65,4 +65,18 @@ public class FlightService {
                 .orElseThrow(()-> new RuntimeException("Flight with Id Not existing"));
     }
 
+    public List<Flight> searchFlights(String source, String destination) {
+        return flightRepository.searchFlights(source, destination);
+    }
+
+    // Flights by airport
+    public List<Flight> getFlightsByAirport(String airportCode) {
+        return flightRepository.findFlightsByAirportCode(airportCode);
+    }
+
+    // Flights by airline
+    public List<Flight> getFlightsByAirline(Integer airlineId) {
+        return flightRepository.findByAirline_AirlineId(airlineId);
+    }
+
 }
