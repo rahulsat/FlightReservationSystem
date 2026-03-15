@@ -54,52 +54,56 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
 
-        Optional<User> user = userRepository.findByName(request.getName());
-
-        if(user.isPresent() &&
-                passwordEncoder.matches(request.getPassword(), user.get().getPassword())){
-
-            String token = jwtUtil.generateToken(user.get().getName());
-
-            LoginResponse response =
-                    new LoginResponse(user.get().getName(),user.get().getPassword(),token);
-
-            return ResponseEntity.ok(response);
-        }
-
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body("Invalid username or password");
-    }
-    @PostMapping("/AdminLogin")
-    public ResponseEntity<?> adminLogin(@RequestBody AdminLoginRequest request){
         if(request == null){
-            return ResponseEntity
-                    .badRequest()
-                    .body("Request body cannot be empty");
+            return ResponseEntity.badRequest().body("Request body cannot be empty");
         }
 
-        // 2️⃣ Empty username or password
         if(request.getName() == null || request.getName().trim().isEmpty() ||
                 request.getPassword() == null || request.getPassword().trim().isEmpty()){
 
-            return ResponseEntity
-                    .badRequest()
+            return ResponseEntity.badRequest()
                     .body("Username or password cannot be empty");
         }
 
-        // 3️⃣ Trim spaces
         String username = request.getName().trim();
         String password = request.getPassword().trim();
-        if(adminConfig.getName().equals(request.getName()) &&
-                adminConfig.getPassword().equals(request.getPassword())){
-            String role="ADMIN";
-            String token=jwtUtil.generateToken(role);
 
-            AdminLoginResponse response=new AdminLoginResponse(request.getName(),
-                    "Successfully Logged in as Admin",role,token);
+        // 1️⃣ Check ADMIN
+        if(adminConfig.getName().equals(username) &&
+                adminConfig.getPassword().equals(password)){
+
+            String role = "ADMIN";
+            String token = jwtUtil.generateToken(username);
+
+            LoginResponse response = new LoginResponse(
+                    username,
+                    role,
+                    token
+            );
 
             return ResponseEntity.ok(response);
         }
-        return ResponseEntity.ok("Sorry you dont have access");
+
+        // 2️⃣ Check USER from database
+        Optional<User> user = userRepository.findByName(username);
+
+        if(user.isPresent() &&
+                passwordEncoder.matches(password, user.get().getPassword())){
+
+            String role = "USER";
+            String token = jwtUtil.generateToken(username);
+
+            LoginResponse response = new LoginResponse(
+                    user.get().getName(),
+                    role,
+                    token
+            );
+
+            return ResponseEntity.ok(response);
+        }
+
+        // 3️⃣ Invalid login
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body("Invalid username or password");
     }
 }
