@@ -21,10 +21,11 @@ public interface FlightRepository extends JpaRepository<Flight, Integer> {
         List<Flight> findFlightsByAirportCode(String airportCode);
 
         // Search flights
+        // Search flights by City Names instead of Codes
         @Query("""
-            SELECT f FROM Flight f
-            WHERE f.sourceAirport.airportCode = :source
-              AND f.destinationAirport.airportCode = :destination
-           """)
+    SELECT f FROM Flight f
+    WHERE f.sourceAirport.airportCode = :source
+      AND f.destinationAirport.airportCode = :destination
+""")
         List<Flight> searchFlights(String source, String destination);
 }
