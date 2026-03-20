@@ -17,11 +17,20 @@ import java.util.List;
 @RequestMapping("/user")
 @RequiredArgsConstructor
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
 
     private final UserService userService;
     private final FlightService flightService;
     private final AirlineService airlineService;
+
+    // ✅ New Endpoint to fetch full profile data using email
+    @GetMapping("/profile/{email:.+}")
+    public ResponseEntity<User> getProfile(@PathVariable String email) {
+        // In your service, use userRepository.findByEmail(email)
+        return ResponseEntity.ok(userService.getUserByEmail(email));
+    }
+
 
     @PatchMapping("/update/{id}")
     public ResponseEntity<?> updateProfile(@PathVariable int id,@RequestBody User request){

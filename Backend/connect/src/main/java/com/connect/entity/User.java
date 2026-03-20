@@ -1,5 +1,6 @@
     package com.connect.entity;
 
+    import com.fasterxml.jackson.annotation.JsonIgnore;
     import jakarta.persistence.*;
     import lombok.*;
 
@@ -25,6 +26,7 @@
         private String password;
         @Column(unique = true,nullable=false,length=11)
         private String phoneNumber;
+        @JsonIgnore
         @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
         private List<Members> addMembers;
     }

@@ -1,27 +1,24 @@
 package com.connect.config;
 
-import com.connect.dto.requests.AdminLoginRequest;
 import com.connect.dto.requests.LoginRequest;
 import com.connect.dto.requests.RegisterRequest;
-import com.connect.dto.response.AdminLoginResponse;
 import com.connect.dto.response.LoginResponse;
 import com.connect.dto.response.RegisterResponse;
 import com.connect.entity.User;
 import com.connect.repository.UserRepository;
 import com.connect.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000") // ✅ Ensure CORS is handled
 public class AuthController {
 
     private final JwtUtil jwtUtil;
@@ -31,12 +28,11 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
-        Optional<User> user = userRepository.findByName(request.getName());
-        if (user.isPresent()) {
-           return ResponseEntity
-                   .badRequest()
-                   .body("User already exists");
+        // Check if user exists by email instead of just name
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            return ResponseEntity.badRequest().body("User with this email already exists");
         }
+
         User newUser = User.builder()
                 .name(request.getName())
                 .email(request.getEmail())
@@ -45,65 +41,48 @@ public class AuthController {
                 .phoneNumber(request.getPhoneNumber())
                 .build();
         userRepository.save(newUser);
-        RegisterResponse response =
-                new RegisterResponse(newUser.getName(),
-                        newUser.getEmail(),"User registered successfully");
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(new RegisterResponse(newUser.getName(), newUser.getEmail(), "User registered successfully"));
     }
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+        if (request == null) return ResponseEntity.badRequest().body("Request body empty");
 
-        if(request == null){
-            return ResponseEntity.badRequest().body("Request body cannot be empty");
+        // ✅ We treat the 'name' field in LoginRequest as 'identifier' (could be name OR email)
+        String identifier = (request.getName() != null) ? request.getName().trim() : "";
+        String password = (request.getPassword() != null) ? request.getPassword().trim() : "";
+
+        if (identifier.isEmpty() || password.isEmpty()) {
+            return ResponseEntity.badRequest().body("Identifier or password cannot be empty");
         }
 
-        if(request.getName() == null || request.getName().trim().isEmpty() ||
-                request.getPassword() == null || request.getPassword().trim().isEmpty()){
-
-            return ResponseEntity.badRequest()
-                    .body("Username or password cannot be empty");
+        // 1️⃣ Check ADMIN (Comparing identifier against admin name/email)
+        if (adminConfig.getName().equals(identifier) && adminConfig.getPassword().equals(password)) {
+            String token = jwtUtil.generateToken(identifier);
+            return ResponseEntity.ok(new LoginResponse(identifier, "ADMIN", token));
         }
 
-        String username = request.getName().trim();
-        String password = request.getPassword().trim();
+        // 2️⃣ Check USER from database (Try Email first, then Name)
+        Optional<User> userOpt = userRepository.findByEmail(identifier);
+        if (userOpt.isEmpty()) {
+            userOpt = userRepository.findByName(identifier);
+        }
 
-        // 1️⃣ Check ADMIN
-        if(adminConfig.getName().equals(username) &&
-                adminConfig.getPassword().equals(password)){
+        if (userOpt.isPresent() && passwordEncoder.matches(password, userOpt.get().getPassword())) {
+            User user = userOpt.get();
+            String token = jwtUtil.generateToken(user.getEmail()); // Use email for token
 
-            String role = "ADMIN";
-            String token = jwtUtil.generateToken(username);
-
+            // ✅ CRITICAL: Return the EMAIL as the username so Navbar can use it
             LoginResponse response = new LoginResponse(
-                    username,
-                    role,
+                    user.getEmail(),
+                    "USER",
                     token
             );
 
             return ResponseEntity.ok(response);
         }
 
-        // 2️⃣ Check USER from database
-        Optional<User> user = userRepository.findByName(username);
-
-        if(user.isPresent() &&
-                passwordEncoder.matches(password, user.get().getPassword())){
-
-            String role = "USER";
-            String token = jwtUtil.generateToken(username);
-
-            LoginResponse response = new LoginResponse(
-                    user.get().getName(),
-                    role,
-                    token
-            );
-
-            return ResponseEntity.ok(response);
-        }
-
-        // 3️⃣ Invalid login
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body("Invalid username or password");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email/username or password");
     }
 }

@@ -61,4 +61,9 @@ public class UserService {
         return airportRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Airport not found"));
     }
+
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+    }
 }

@@ -1,5 +1,6 @@
 package com.connect.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,6 +22,7 @@ public class Members {
     private String phoneNumber;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "user_id")
     private User user;   // ✅ MUST BE EXACT NAME: user
 }
